@@ -1,9 +1,10 @@
 # kanji-textbook-table
 
-Simple software to convert a simple TSV format for kanji information into publishable tables.
+Simple software to convert a set of simple TSV formats for kanji
+information into publishable tables.
 
 
-## The TSV data format
+## The TSV data format for "lists"
 
 The first line of the format is the column names for the ten (10) columns:
 
