@@ -15,43 +15,47 @@ After this initial line, all further lines are data, with the columns as describ
 
 ### Level
 
-TODO
+This column is required. It is an integer.
 
 ### Chapter
 
-TODO
+This column is required. It is an integer.
 
 ### Japanese
 
-TODO
+This column is required. It is a string.
 
 ### Ruby
 
-TODO
+This column is optional. It is a comma-separated string of
+pipe-separated items. Each of these pipe-separated items is a kanji
+set on the left side and the reading in hiragana of the kanji set on
+the right side. These kanji sets should map in order onto the
+"Japanese" in the previous column.
 
 ### Reading
 
-TODO
+This column is required. It is a string.
 
 ### Meaning
 
-TODO
+This column is required. It is a string.
 
 ### Section
 
-TODO
+This column is required. It is a string.
 
 ### Extra
 
-TODO
+This column is optional. It is either empty or contains a "*".
 
 ### Grammar Point
 
-TODO
+This column is optional. It is a string.
 
 ### Notes
 
-TODO
+This column is optional. It is a string.
 
 ## TSV example:
 
