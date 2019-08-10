@@ -71,4 +71,11 @@ Level	Chapter	Japanese	Ruby	Reading	Meaning	Section	Extra	Grammar Point	Notes
 
 ## How to run the code
 
-The code is written in Python 3.6.8, developed on Ubuntu 18.04.3 LTS.
+The code is written in Python 3.6.8, developed on Ubuntu 18.04.3 LTS,
+using very basic libraries.
+
+Example usage:
+
+```bash
+python3 format.py --tsv ~/tmp/kanji-list.tsv --template ./word-html-frame.template.html --output /tmp/out.html
+```
