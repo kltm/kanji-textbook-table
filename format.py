@@ -99,6 +99,11 @@ def main():
                     data_object["grammar-point"] = line[8] if (type(line[8]) is str and len(line[8]) > 0) else None # opt
                     data_object["notes"] = line[9] if (type(line[9]) is str and len(line[9]) > 0) else None # opt
 
+                    ## Basic error checking.
+                    for required_entry in ["level", "chapter", "raw-japanese", "reading", "meaning", "section"]:
+                        if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
+                            die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
+
                     # print(data_object["raw-ruby"])
 
                     ## Transform the comma/pipe-separated data raw "Ruby"
@@ -130,7 +135,7 @@ def main():
                         print("kanji: " + r["kanji"])
                         print("reading: " + r["reading"])
                         if j.find(r["kanji"]) == -1:
-                            print('malformed line: '+ str(i) +' '+ '\t'.join(line))
+                            print('malformed line at '+ str(i) +': '+ '\t'.join(line))
                             die_screaming('bad japanese/ruby at line '+ str(i))
                         else:
 
