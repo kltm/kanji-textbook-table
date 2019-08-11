@@ -14,6 +14,11 @@ Level	Chapter	Japanese	Ruby	Reading	Meaning	Section	Extra	Grammar Point	Notes
 
 After this initial line, all further lines are data, with the columns as described below.
 
+There is a special relationship between "Japanese" and "Ruby". The
+listed ruby is an in-order description of what kanji need to be hinted
+for reading in the "Japanese" column. This program will err if there
+is anything wrong with that map.
+
 ### Level
 
 This column is required. It is an integer.
