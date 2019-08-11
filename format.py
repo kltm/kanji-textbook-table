@@ -94,15 +94,18 @@ def main():
                     data_object["raw-ruby"] = line[3] if (type(line[3]) is str and len(line[3]) > 0) else None # opt
                     data_object["reading"] = str(line[4]) # req
                     data_object["meaning"] = line[5] # req
-                    data_object["section"] = line[6] # req
+                    data_object["section"] = line[6] if (type(line[6]) is str and len(line[6]) > 0) else None # opt
                     data_object["extra"] = True if (type(line[7]) is str and line[7] == '*') else None # opt
                     data_object["grammar-point"] = line[8] if (type(line[8]) is str and len(line[8]) > 0) else None # opt
                     data_object["notes"] = line[9] if (type(line[9]) is str and len(line[9]) > 0) else None # opt
 
                     ## Basic error checking.
-                    for required_entry in ["level", "chapter", "raw-japanese", "reading", "meaning", "section"]:
+                    for required_entry in ["level", "chapter", "raw-japanese", "reading", "meaning"]:
                         if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
                             die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
+
+                    ## Additional metadata that we'll want.
+                    data_object["row"] = str(i) # inserted
 
                     # print(data_object["raw-ruby"])
 
@@ -152,15 +155,17 @@ def main():
                             if offset == 0:
                                 pass
                             else:
-                                pre_string = j[0:(offset-1)]
+                                pre_string = j[0:(offset)]
                                 print('pre_string: ' + pre_string)
-                                ruby_parse_data.append({"string": pre_string})
+                                ruby_parse_data.append({"string": pre_string,
+                                                        "has-ruby": False})
 
                             ## Add the ruby string section.
-                            ruby_string = j[offset:(offset+rl-1)]
+                            ruby_string = j[offset:(offset+rl)]
                             print('ruby_string: ' + ruby_string)
                             ruby_parse_data.append({"string": ruby_string,
-                                                    "ruby":r["reading"]})
+                                                    "reading":r["reading"],
+                                                    "has-ruby": True})
 
                             ## If this is the last ruby we're dealing
                             ## with, we're done and add the rest of
@@ -172,7 +177,8 @@ def main():
                                 if (offset+rl) < jl:
                                     post_string = j[(offset+rl):jl]
                                     print('post_string: ' + post_string)
-                                    ruby_parse_data.append({"string": post_string})
+                                    ruby_parse_data.append({"string": post_string,
+                                                            "has-ruby": False})
                             else:
                                 j = j[(offset+rl):jl]
 
@@ -184,7 +190,7 @@ def main():
     print(json.dumps(data_list, indent = 4))
 
     ## Write everything out in our given format.
-    rendered = pystache.render(output_template, data_list)
+    rendered = pystache.render(output_template, {"data": data_list})
     with open(args.output, 'w') as output:
         output.write(rendered)
 

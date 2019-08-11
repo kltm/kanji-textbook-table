@@ -49,7 +49,7 @@ This column is required. It is a string.
 
 ### Section
 
-This column is required. It is a string.
+This column is optional. It is a string.
 
 ### Extra
 
