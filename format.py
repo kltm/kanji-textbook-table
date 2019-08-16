@@ -113,15 +113,18 @@ def main():
                     ## object into something usable, if extant.
                     ruby = []
                     if data_object["raw-ruby"]:
-                        ruby_set_list_raw = data_object["raw-ruby"].split(",")
-                        for ruby_set_raw in ruby_set_list_raw:
-                            ruby_set_pre = ruby_set_raw.strip()
-                            # print(ruby_set_pre)
-                            ruby_set = ruby_set_pre.split("|")
-                            ruby_kanji = ruby_set[0].strip()
-                            ruby_reading = ruby_set[1].strip()
-                            ruby.append({"kanji": ruby_kanji,
-                                         "reading": ruby_reading})
+                        try:
+                            ruby_set_list_raw = data_object["raw-ruby"].split(",")
+                            for ruby_set_raw in ruby_set_list_raw:
+                                ruby_set_pre = ruby_set_raw.strip()
+                                print("ruby_set_pre: " + ruby_set_pre)
+                                ruby_set = ruby_set_pre.split("|")
+                                ruby_kanji = ruby_set[0].strip()
+                                ruby_reading = ruby_set[1].strip()
+                                ruby.append({"kanji": ruby_kanji,
+                                             "reading": ruby_reading})
+                        except:
+                            die_screaming('error parsing ruby at '+ str(i) +': '+ '\t'.join(line))
                     data_object["ruby"] = ruby
 
                     ## Now that we have that parsed, create a new
