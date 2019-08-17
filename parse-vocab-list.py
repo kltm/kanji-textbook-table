@@ -6,7 +6,10 @@
 ####  python3 parse.py --help
 ####
 #### Get report of current problems:
-####  python3 parse.py --tsv ~/tmp/kanji-list.tsv --output /tmp/out.json
+####  python3 parse-vocab-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 単語リス ト\(4\).tsv --output /tmp/parsed-vocab-list.json
+####
+#### As part of a pipeline:
+####  python3 parse-vocab-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 単語リス ト\(4\).tsv --output /tmp/parsed-vocab-list.json && python3 chapter-bin.py -v --input /tmp/parsed-vocab-list.json --output /tmp/chapters.json && python3 apply-to-chapters.py --input /tmp/chapters.json --template ./word-html-frame.template.html --output /tmp/chapter
 ####
 
 import sys
@@ -35,7 +38,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='More verbose output')
-    parser.add_argument('-d', '--tsv',
+    parser.add_argument('-t', '--tsv',
                         help='The TSV data file to read in')
     parser.add_argument('-o', '--output',
                         help='The file to output to')
@@ -52,8 +55,12 @@ def main():
     LOGGER.info('Will use "' + args.tsv + '" as data')
 
     if not args.output:
-        die_screaming('need an output pattern argument')
-    LOGGER.info('Will output with pattern to: ' + args.output)
+        die_screaming('need an output file argument')
+    LOGGER.info('Will output to: ' + args.output)
+
+    ## Setup some general metadata checking for the different formats.
+    required_total_columns = 10
+    required_columns = ["level", "chapter", "raw-japanese", "reading", "meaning"]
 
     ## Bring on all data in one sweep, formatting and adding
     ## appropriate parts to internal format so that we can simply
@@ -75,7 +82,7 @@ def main():
                 if len(set(line)) == 1 and line[0] == "":
                     LOGGER.info("Skipping completely empty line: " + str(i))
                     continue
-                elif count != 10:
+                elif not count == required_total_columns:
                     die_screaming('malformed line: '+ str(i) +' '+ '\t'.join(line))
                 else:
 
@@ -85,7 +92,10 @@ def main():
                     # LOGGER.info(line[3])
 
                     ## Base parsing everything into a common object.
+                    ## Additional metadata that we'll want.
                     data_object = {}
+                    data_object["row"] = str(i) # inserted
+
                     data_object["level"] = str(line[0]) # req
                     data_object["chapter"] = str(line[1]) # req
                     data_object["raw-japanese"] = str(line[2]) # req
@@ -98,12 +108,9 @@ def main():
                     data_object["notes"] = line[9] if (type(line[9]) is str and len(line[9]) > 0) else None # opt
 
                     ## Basic error checking.
-                    for required_entry in ["level", "chapter", "raw-japanese", "reading", "meaning"]:
+                    for required_entry in required_columns:
                         if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
                             die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
-
-                    ## Additional metadata that we'll want.
-                    data_object["row"] = str(i) # inserted
 
                     ## Transform the comma/pipe-separated data raw "Ruby"
                     ## object into something usable, if extant.
@@ -158,7 +165,7 @@ def main():
                                 pre_string = j[0:(offset)]
                                 LOGGER.info('pre_string: ' + pre_string)
                                 ruby_parse_data.append({"string": pre_string,
-                                                        "has-ruby": False})
+                                                            "has-ruby": False})
 
                             ## Add the ruby string section.
                             ruby_string = j[offset:(offset+rl)]
@@ -183,6 +190,11 @@ def main():
                                 j = j[(offset+rl):jl]
 
                     data_object["rich-japanese"] = ruby_parse_data
+
+                    ## Basic error checking.
+                    for required_entry in required_columns:
+                        if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
+                            die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
 
                     ## Onto the pile.
                     data_list.append(data_object)
