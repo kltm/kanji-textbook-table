@@ -106,7 +106,7 @@ def main():
                     data_object["raw-ruby"] = line[3] if (type(line[3]) is str and len(line[3]) > 0) else None # opt
                     data_object["reading"] = str(line[4]) # req
                     data_object["meaning"] = line[5] # req
-                    data_object["raw-section"] = line[6] if (type(line[6]) is str and len(line[6]) > 0) else None # opt
+                    data_object["section"] = line[6] if (type(line[6]) is str and len(line[6]) > 0) else None # opt
                     data_object["extra"] = True if (type(line[7]) is str and line[7] == '*') else None # opt
                     data_object["grammar-point"] = line[8] if (type(line[8]) is str and len(line[8]) > 0) else None # opt
                     data_object["notes"] = line[9] if (type(line[9]) is str and len(line[9]) > 0) else None # opt
@@ -118,19 +118,6 @@ def main():
 
                     ## Additional metadata that we'll want.
                     data_object["row"] = str(i) # inserted
-
-                    ## Extract what information we can from "Section"
-                    ## (raw-section).
-                    section = None
-                    subset = None
-                    if data_object["raw-section"]:
-                        if not len(data_object["raw-section"]) == 2:
-                            die_screaming('malformed section construction at '+ str(i) +': '+ '\t'.join(line))
-                        else:
-                            section = data_object["raw-section"][0]
-                            subset = data_object["raw-section"][1]
-                    data_object["section"] = section
-                    data_object["subset"] = subset
 
                     ## Transform the comma/pipe-separated data raw "Ruby"
                     ## object into something usable, if extant.
@@ -214,7 +201,7 @@ def main():
                     ## Onto the pile.
                     data_list.append(data_object)
 
-    ## Final checking dump.
+    ## Early checking dump.
     print(json.dumps(data_list, indent = 4))
 
     ## Sort the data into the different chapter sets.
@@ -224,16 +211,42 @@ def main():
         #print(chapter)
         if not chapter in chapter_sets:
             chapter_sets[chapter] = []
-        else:
-            chapter_sets[chapter].append(item)
+        chapter_sets[chapter].append(item)
     #print(", ".join(sorted(chapter_sets.keys(), key=int)))
 
     ## Loop over the different chapters to create the output.
     for chi in sorted(chapter_sets.keys(), key=int):
         data_list = chapter_sets[chi]
 
+        ## Sort the chapter sets into sections sets.
+        sections = {}
+        for item in data_list:
+            section = item["section"]
+            if not section in sections:
+                sections[section] = []
+            sections[section].append(item)
+
+        ## Manually add the sections in the order we want them to
+        ## appear in the chapter.
+        section_order = [None, "読み物　一", "会話　一", "読み物　二", "会話　二", "読み物　三", "会話　三", "読み物　四", "会話　四"]
+        ## Cross-check against what we have.
+        print(", ".join(sorted([str(x) for x in section_order])))
+        print(", ".join(sorted([str(x) for x in sections.keys()])))
+        if not set(sections.keys()).issubset(set(section_order)):
+            die_screaming('unorderable section header')
+
+        ## Prepare sections with(out) headers for final rendering as
+        ## separate tables in the chapter docs.
+        sectioned_data_list = []
+        for s in section_order:
+            if s in sections:
+                sectioned_data_list.append({"header": s, "words": sections[s]})
+
+        ## Chapter checking dump.
+        print(json.dumps(sectioned_data_list, indent = 4))
+
         ## Write everything out in our given format.
-        rendered = pystache.render(output_template, {"data": data_list})
+        rendered = pystache.render(output_template, {"data": sectioned_data_list})
         with open(args.output + "-" + str(chi) + output_extension, 'w') as output:
             output.write(rendered)
 

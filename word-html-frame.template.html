@@ -886,36 +886,31 @@ table.MsoTableGrid
 
 <body lang=EN-US style='tab-interval:.5in'>
 
-<div class=WordSection1>
+  {{ #data }}
+  <div class=WordSection1>
 
-<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
- style='border-collapse:collapse;border:none;mso-border-alt:solid windowtext .5pt;
- mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
- <!-- <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'> -->
- <!--  <td width=277 colspan=2 style='width:208.1pt;border:solid windowtext 1.0pt; -->
- <!--  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'> -->
- <!--  <p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom: -->
- <!--  5.0pt;margin-left:0in'><span style='font-size:10.0pt;font-family:"MS Mincho"; -->
- <!--  mso-ascii-font-family:"Times New Roman";mso-hansi-font-family:"Times New Roman"'>読み物</span><span -->
- <!--  lang=JA style='font-size:10.0pt;font-family:"MS Mincho";mso-ascii-font-family: -->
- <!--  "Times New Roman";mso-hansi-font-family:"Times New Roman";mso-fareast-language: -->
- <!--  JA'>　</span><span style='font-size:10.0pt;font-family:"MS Mincho";mso-ascii-font-family: -->
- <!--  "Times New Roman";mso-hansi-font-family:"Times New Roman"'>一</span><span -->
- <!--  style='font-size:10.0pt;font-family:"Times New Roman",serif;mso-bidi-theme-font: -->
- <!--  minor-bidi;mso-fareast-language:JA'><o:p></o:p></span></p> -->
- <!--  </td> -->
- <!-- </tr> -->
- {{ #data }}
- <tr style='mso-yfti-irow:{{ row }}'>
-  <td width=115 style='width:1.2in;border:solid windowtext 1.0pt;border-top: none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt; padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-top:5.0pt'><span style='font-size:10.0pt; font-family:"Times New Roman",serif;mso-bidi-theme-font:minor-bidi'>{{ #extra }}*{{ /extra}}{{ ^extra}}{{ /extra }}{{ #rich-japanese }}{{ #has-ruby }}<ruby style='ruby-align:distribute-space'><span style='font-family:"MS Mincho";mso-ascii-font-family:"Times New Roman"; mso-hansi-font-family:"Times New Roman"'>{{ string }}</span><rp>(</rp><rt style='font-size:5.0pt;font-family:"MS Mincho";layout-grid-mode:line'>{{ reading }}</rt><rp>)</rp></ruby>{{ /has-ruby }}{{ ^has-ruby }}<span style='font-family:"MS Mincho";mso-ascii-font-family:"Times New Roman"; mso-hansi-font-family:"Times New Roman"'>{{ string }}</span>{{ /has-ruby }}{{ /rich-japanese }}{{ ^rich-japanese }}<span style='font-family:"MS Mincho";mso-ascii-font-family:"Times New Roman"; mso-hansi-font-family:"Times New Roman"'>{{ raw-japanese }}</span>{{ /rich-japanese }}</span></p><p class=MsoNormal style='margin-bottom:5.0pt'><span style='font-size:10.0pt; font-family:"Times New Roman",serif;mso-bidi-theme-font:minor-bidi'><o:p>&nbsp;</o:p></span></p></td>
-  <td width=162 style='width:121.7pt;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt; mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom: 5.0pt;margin-left:0in'><span style='font-size:10.0pt;font-family:"Times New Roman",serif; mso-bidi-theme-font:minor-bidi'>{{ meaning }}<o:p></o:p></span></p></td>
- </tr>
- {{ /data }}
-</table>
+    <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;border:none;mso-border-alt:solid windowtext .5pt; mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt'>
+      {{ #header }}
+      <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+	<td width=277 colspan=2 style='width:208.1pt;border:solid windowtext 1.0pt; mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+	  <p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom: 5.0pt;margin-left:0in'>
+	    <span style='font-size:10.0pt;font-family:"MS Mincho"; mso-ascii-font-family:"Times New Roman";mso-hansi-font-family:"Times New Roman"'>{{ header }}</span><span style='font-size:10.0pt;font-family:"Times New Roman",serif;mso-bidi-theme-font: minor-bidi;mso-fareast-language:JA'><o:p></o:p></span>
+	  </p>
+	</td>
+      </tr>
+      {{ /header }}
+      {{ #words }}
+      <tr style='mso-yfti-irow:{{ row }}'>
+	<td width=115 style='width:1.2in;border:solid windowtext 1.0pt;border-top: none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt; padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-top:5.0pt'><span style='font-size:10.0pt; font-family:"Times New Roman",serif;mso-bidi-theme-font:minor-bidi'>{{ #extra }}*{{ /extra}}{{ ^extra}}{{ /extra }}{{ #rich-japanese }}{{ #has-ruby }}<ruby style='ruby-align:distribute-space'><span style='font-family:"MS Mincho";mso-ascii-font-family:"Times New Roman"; mso-hansi-font-family:"Times New Roman"'>{{ string }}</span><rp>(</rp><rt style='font-size:5.0pt;font-family:"MS Mincho";layout-grid-mode:line'>{{ reading }}</rt><rp>)</rp></ruby>{{ /has-ruby }}{{ ^has-ruby }}<span style='font-family:"MS Mincho";mso-ascii-font-family:"Times New Roman"; mso-hansi-font-family:"Times New Roman"'>{{ string }}</span>{{ /has-ruby }}{{ /rich-japanese }}{{ ^rich-japanese }}<span style='font-family:"MS Mincho";mso-ascii-font-family:"Times New Roman"; mso-hansi-font-family:"Times New Roman"'>{{ raw-japanese }}</span>{{ /rich-japanese }}</span></p><p class=MsoNormal style='margin-bottom:5.0pt'><span style='font-size:10.0pt; font-family:"Times New Roman",serif;mso-bidi-theme-font:minor-bidi'><o:p>&nbsp;</o:p></span></p></td>
+	<td width=162 style='width:121.7pt;border-top:none;border-left:none; border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt; mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt; mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'><p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom: 5.0pt;margin-left:0in'><span style='font-size:10.0pt;font-family:"Times New Roman",serif; mso-bidi-theme-font:minor-bidi'>{{ meaning }}<o:p></o:p></span></p></td>
+      </tr>
+      {{ /words }}
+    </table>
 
-<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+    <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-</div>
+  </div>
+  {{ /data }}
 
 </body>
 
