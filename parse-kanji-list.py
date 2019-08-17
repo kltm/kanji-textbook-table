@@ -124,6 +124,12 @@ def main():
                     last_read_write_token = data_object["read-write"]
                     data_object["read-write-changed-count"] = changed_read_write_count
 
+                    ## Convert the W/R into what will appear in that
+                    ## case for mustache.
+                    data_object["read-write-header"] = "読めなければいけない漢字"
+                    if data_object["read-write"] == "W":
+                        data_object["read-write-header"] = "書けなければいけない漢字"
+
                     ## Onto the pile.
                     data_list.append(data_object)
 
