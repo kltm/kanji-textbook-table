@@ -4,19 +4,35 @@
     {{ #data }}
     <table>
       {{ #header }}
-      <tr>
-	<td>
+      <thead>
+	<tr>
+	  <td>
 	  {{ header }}
-	</td>
-      </tr>
+	  </td>
+	</tr>
+      <thead>
       {{ /header }}
+      <tbody>
       {{ #sections }}
       <tr>
 	<td>
+	  {{ read-write-changed-count }}.
+	</td>
+	<td>
 	  {{ kanji }}
+	</td>
+	<td>
+	  {{ hiragana }}
+	</td>
+	<td>
+	  {{ meaning }}
+	</td>
+	<td>
+	  {{ section }}
 	</td>
       </tr>
       {{ /sections }}
+      </tbody>
     </table>
     {{ /data }}
   </body>
