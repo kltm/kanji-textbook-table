@@ -9,7 +9,7 @@
 ####  python3 parse-kanji-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字リス ト.tsv --output /tmp/parsed-kanji-list.json
 ####
 #### As part of a pipeline:
-####  TODO: python3 parse-kanji-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字リスト\ -\ 漢字リス ト\(4\).tsv --output /tmp/parsed-kanji-list.json && python3 chapter-bin.py -v --input /tmp/parsed-vocab-list.json --output /tmp/chapters.json && python3 apply-to-chapters.py --input /tmp/chapters.json --template ./word-html-frame.template.html --output /tmp/chapter
+####  python3 parse-kanji-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字リスト\ -\ 漢字リス ト\(4\).tsv --output /tmp/parsed-kanji-list.json && python3 chapter-bin.py -v --input /tmp/parsed-vocab-list.json --output /tmp/chapters.json && python3 apply-to-chapters.py --input /tmp/chapters.json --template ./word-html-frame.template.html --output /tmp/chapter
 ####
 
 import sys
@@ -71,6 +71,8 @@ def main():
 
         ## Process data.
         first_line_p = True
+        last_read_write_token = None
+        changed_read_write_count = 0
         i = 0
         for line in tsv_in:
             i = i + 1
@@ -113,6 +115,14 @@ def main():
                     for required_entry in required_columns:
                         if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
                             die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
+
+                    ## Try and get the read/write section changover
+                    ## counts.
+                    if not data_object["read-write"] == str(last_read_write_token):
+                        changed_read_write_count = 0
+                    changed_read_write_count = changed_read_write_count + 1 # inc
+                    last_read_write_token = data_object["read-write"]
+                    data_object["read-write-changed-count"] = changed_read_write_count
 
                     ## Onto the pile.
                     data_list.append(data_object)
