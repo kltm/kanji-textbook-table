@@ -1,10 +1,36 @@
-# kanji-textbook-table
+# textbook-project-data
 
-Simple software to convert a set of simple TSV formats for kanji
-information into publishable tables.
+Simple software to convert three simple TSV formats for vocabulry and
+kanji information into publishable tables.
 
+The first piece of software (parse.py) produces a parsed JSON version
+that can be fed into other programs for further processing.
 
-## The TSV data format for "lists"
+## The TSV data format for kanji lists
+
+The first line of the format is the column names for the twelve (12) columns:
+
+```tsv
+Level	Chapter	W/R	Kanji	Hiragana	Introduced	New Kanji	New Reading	Meaning	Section	L. #W/R	Notes
+```
+
+After this initial line, all further lines are data, with the columns
+as described below. Completely blank lines and lines where all fields
+are blank can be skipped.
+
+## The TSV data format for kanji details
+
+The first line of the format is the column names for the fourteen (14) columns:
+
+```tsv
+Level	Chapter	W/R	Kanji	Reading	Highlighted Reading	Meaning	Radical	Radical  Meaning	Radical Example	Radical Example Notes	Example Word	Highlighted Example Word	Stroke Order
+```
+
+After this initial line, all further lines are data, with the columns
+as described below. Completely blank lines and lines where all fields
+are blank can be skipped.
+
+## The TSV data format for vocabulary lists
 
 The first line of the format is the column names for the ten (10) columns:
 
@@ -12,7 +38,9 @@ The first line of the format is the column names for the ten (10) columns:
 Level	Chapter	Japanese	Ruby	Reading	Meaning	Section	Extra	Grammar Point	Notes
 ```
 
-After this initial line, all further lines are data, with the columns as described below.
+After this initial line, all further lines are data, with the columns
+as described below. Completely blank lines and lines where all fields
+are blank can be skipped.
 
 There is a special relationship between "Japanese" and "Ruby". The
 listed ruby is an in-order description of what kanji need to be hinted
