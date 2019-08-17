@@ -49,7 +49,9 @@ This column is required. It is a string.
 
 ### Section
 
-This column is optional. It is a string.
+This column is empty or structured strings. If it is empty, it
+indicates a headerless introduction section that comes before other
+things; otherwise, it should be of the format: \[会読\]\[\\w\].
 
 ### Extra
 
@@ -82,5 +84,8 @@ using very basic libraries.
 Example usage:
 
 ```bash
-python3 format.py --tsv ~/tmp/kanji-list.tsv --template ./word-html-frame.template.html --output /tmp/out.html
+python3 format.py --template ./word-html-frame.template.html  --output /tmp/chapter --tsv ~/tmp/kanji-list.tsv
 ```
+
+Will write the output to /tmp in the form of "chapter-1.html", ...,
+"chapter-8.html", etc.

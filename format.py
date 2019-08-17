@@ -5,7 +5,7 @@
 ####  python3 format.py --help
 ####
 #### Get report of current problems:
-####  python3 format.py --tsv ~/tmp/kanji-list.tsv --template ./word-html-frame.template.html --output /tmp/out.html
+####  python3 format.py --tsv ~/tmp/kanji-list.tsv --template ./word-html-frame.template.html --output-pattern /tmp/out
 ####
 
 import sys
@@ -14,6 +14,8 @@ import logging
 import csv
 import pystache
 import json
+#import functools
+import os
 
 ## Logger basic setup.
 logging.basicConfig(level=logging.INFO)
@@ -38,7 +40,7 @@ def main():
     parser.add_argument('-t', '--template',
                         help='The output template to use')
     parser.add_argument('-o', '--output',
-                        help='The file to output to')
+                        help='The file pattern to output to (*-1.html, etc.)')
     args = parser.parse_args()
 
     ## Up the verbosity level if we want.
@@ -50,15 +52,22 @@ def main():
     if not args.tsv:
         die_screaming('need an input tsv argument')
     LOGGER.info('Will use "' + args.tsv + '" as data')
+
     if not args.template:
         die_screaming('need a template argument for the output')
     output_template = None
     with open(args.template) as fhandle:
         output_template = fhandle.read()
     LOGGER.info('Will use: ' + args.template + ' as the output formatter')
+
+    output_extension = os.path.splitext(args.template)[1]
+    if not output_extension:
+        die_screaming('need a template with an output extension')
+    LOGGER.info('Will use: ' + output_extension + ' as the output extension')
+
     if not args.output:
-        die_screaming('need an output argument')
-    LOGGER.info('Will output to: ' + args.output)
+        die_screaming('need an output pattern argument')
+    LOGGER.info('Will output with pattern to: ' + args.output)
 
     ## Bring on all data in one sweep, formatting and adding
     ## appropriate parts to internal format so that we can simply
@@ -77,7 +86,10 @@ def main():
                 continue
             else:
                 count = len(line)
-                if count != 10:
+                if len(set(line)) == 1 and line[0] == "":
+                    print("Skipping completely empty line: " + str(i))
+                    continue
+                elif count != 10:
                     die_screaming('malformed line: '+ str(i) +' '+ '\t'.join(line))
                 else:
 
@@ -94,7 +106,7 @@ def main():
                     data_object["raw-ruby"] = line[3] if (type(line[3]) is str and len(line[3]) > 0) else None # opt
                     data_object["reading"] = str(line[4]) # req
                     data_object["meaning"] = line[5] # req
-                    data_object["section"] = line[6] if (type(line[6]) is str and len(line[6]) > 0) else None # opt
+                    data_object["raw-section"] = line[6] if (type(line[6]) is str and len(line[6]) > 0) else None # opt
                     data_object["extra"] = True if (type(line[7]) is str and line[7] == '*') else None # opt
                     data_object["grammar-point"] = line[8] if (type(line[8]) is str and len(line[8]) > 0) else None # opt
                     data_object["notes"] = line[9] if (type(line[9]) is str and len(line[9]) > 0) else None # opt
@@ -107,10 +119,22 @@ def main():
                     ## Additional metadata that we'll want.
                     data_object["row"] = str(i) # inserted
 
-                    # print(data_object["raw-ruby"])
+                    ## Extract what information we can from "Section"
+                    ## (raw-section).
+                    section = None
+                    subset = None
+                    if data_object["raw-section"]:
+                        if not len(data_object["raw-section"]) == 2:
+                            die_screaming('malformed section construction at '+ str(i) +': '+ '\t'.join(line))
+                        else:
+                            section = data_object["raw-section"][0]
+                            subset = data_object["raw-section"][1]
+                    data_object["section"] = section
+                    data_object["subset"] = subset
 
                     ## Transform the comma/pipe-separated data raw "Ruby"
                     ## object into something usable, if extant.
+                    # print(data_object["raw-ruby"])
                     ruby = []
                     if data_object["raw-ruby"]:
                         try:
@@ -127,7 +151,7 @@ def main():
                             die_screaming('error parsing ruby at '+ str(i) +': '+ '\t'.join(line))
                     data_object["ruby"] = ruby
 
-                    ## Now that we have that parsed, create a new
+                    ## Now that we have the ruby parsed, create a new
                     ## version of the "Japanese" ("raw-japanese")
                     ## column with mustache renderable data hints.
                     print('^^^')
@@ -190,12 +214,28 @@ def main():
                     ## Onto the pile.
                     data_list.append(data_object)
 
+    ## Final checking dump.
     print(json.dumps(data_list, indent = 4))
 
-    ## Write everything out in our given format.
-    rendered = pystache.render(output_template, {"data": data_list})
-    with open(args.output, 'w') as output:
-        output.write(rendered)
+    ## Sort the data into the different chapter sets.
+    chapter_sets = {}
+    for item in data_list:
+        chapter = str(item["chapter"])
+        #print(chapter)
+        if not chapter in chapter_sets:
+            chapter_sets[chapter] = []
+        else:
+            chapter_sets[chapter].append(item)
+    #print(", ".join(sorted(chapter_sets.keys(), key=int)))
+
+    ## Loop over the different chapters to create the output.
+    for chi in sorted(chapter_sets.keys(), key=int):
+        data_list = chapter_sets[chi]
+
+        ## Write everything out in our given format.
+        rendered = pystache.render(output_template, {"data": data_list})
+        with open(args.output + "-" + str(chi) + output_extension, 'w') as output:
+            output.write(rendered)
 
 ## You saw it coming...
 if __name__ == '__main__':
