@@ -65,8 +65,8 @@ def main():
         section_field_order = [None, "読み物　一", "会話　一", "読み物　二", "会話　二", "読み物　三", "会話　三", "読み物　四", "会話　四"]
     elif args.pattern == "kanji-list":
         upper_set_field = "chapter"
-        section_field = "read-write"
-        section_field_order = ["W", "R"]
+        section_field = "read-write-header"
+        section_field_order = ["書けなければいけない漢字", "読めなければいけない漢字"]
     else:
         die_screaming('unknown ordering pattern')
 
