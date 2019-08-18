@@ -181,6 +181,41 @@ def main():
         upper_sets[upper].append(item)
     print(", ".join(sorted(upper_sets.keys(), key=int)))
 
+    ## Loop over the different chapters to create the output.
+    sectioned_upper_sets = []
+    for chi in sorted(upper_sets.keys(), key=int):
+        data_list = upper_sets[chi]
+
+        ## Sort the upper/chapter sets into sections sets.
+        sections = {}
+        for item in data_list:
+            section = item[section_field]
+            if not section in sections:
+                sections[section] = []
+            sections[section].append(item)
+
+        ## Manually add the sections in the order we want them to
+        ## appear in the chapter.
+        ## Cross-check against what we have.
+        print(", ".join(sorted([str(x) for x in section_field_order])))
+        print(", ".join(sorted([str(x) for x in sections.keys()])))
+        if not set(sections.keys()).issubset(set(section_field_order)):
+            die_screaming('unorderable section header')
+
+        ## Prepare sections with(out) headers for final rendering as
+        ## separate tables in the chapter docs.
+        sectioned_data_list = []
+        for s in section_field_order:
+            if s in sections:
+                sectioned_data_list.append({"header": s, "sections": sections[s]})
+
+        sectioned_upper_sets.append({upper_set_field: str(chi), "data": sectioned_data_list})
+
+        ## Write everything out.
+        print(json.dumps(sectioned_data_list, indent = 4))
+        with open(args.output, 'w') as output:
+            output.write(json.dumps(sectioned_upper_sets, indent = 4))
+
     # ## First, jalphabetically sort the whole thing.
     # ## Order the points list using a custom comparison
     # def jsort(b, a):
