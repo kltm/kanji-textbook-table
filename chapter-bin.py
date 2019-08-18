@@ -51,7 +51,7 @@ def main():
     LOGGER.info('Will input from: ' + args.input)
     if not args.pattern:
         die_screaming('need a pattern argument')
-    if args.pattern not in ["kanji-list", "vocab-list"]:
+    if args.pattern not in ["kanji-list", "kanji-details", "vocab-list"]:
         die_screaming('pattern argument unknown')
     LOGGER.info('Will input from: ' + args.input)
     if not args.output:
@@ -64,6 +64,10 @@ def main():
         section_field = "section"
         section_field_order = [None, "読み物　一", "会話　一", "読み物　二", "会話　二", "読み物　三", "会話　三", "読み物　四", "会話　四"]
     elif args.pattern == "kanji-list":
+        upper_set_field = "chapter"
+        section_field = "read-write-header"
+        section_field_order = ["書けなければいけない漢字", "読めなければいけない漢字"]
+    elif args.pattern == "kanji-details":
         upper_set_field = "chapter"
         section_field = "read-write-header"
         section_field_order = ["書けなければいけない漢字", "読めなければいけない漢字"]

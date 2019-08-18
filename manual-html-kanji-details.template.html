@@ -1,0 +1,58 @@
+
+<html>
+  <head>
+    <style>
+      td {
+      border: 1px solid black;
+      margin: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    {{ #data }}
+    <table>
+      {{ #header }}
+      <!-- <thead> -->
+      <!-- 	<tr> -->
+      <!-- 	  <td> -->
+      <!-- 	  {{ header }} -->
+      <!-- 	  </td> -->
+      <!-- 	</tr> -->
+      <!-- <thead> -->
+      <caption><b><新しい漢字:{{ header }}></b></caption>
+      {{ /header }}
+      <tbody>
+	{{ #sections }}
+	<tr>
+	  <td rowspan="2">
+	    {{ read-write-changed-count }}.
+	  </td>
+	  <td>
+	    TODO
+	  </td>
+	  <td>
+	    {{ kanji-raw }}
+	  </td>
+	  <td>
+	    TODO
+	  </td>
+	  <td>
+	    {{ radical-raw }}
+	    <br />
+	    {{ radical-example-raw }}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan="2">
+	    {{ meaning-raw }}
+	  </td>
+	  <td colspan="3">
+	    {{ example-word-raw }}
+	  </td>
+	</tr>
+	{{ /sections }}
+      </tbody>
+    </table>
+    {{ /data }}
+  </body>
+</html>
