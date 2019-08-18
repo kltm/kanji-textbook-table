@@ -4,13 +4,14 @@
     {{ #data }}
     <table>
       {{ #header }}
-      <thead>
-	<tr>
-	  <td>
-	  {{ header }}
-	  </td>
-	</tr>
-      <thead>
+      <!-- <thead> -->
+      <!-- 	<tr> -->
+      <!-- 	  <td> -->
+      <!-- 	  {{ header }} -->
+      <!-- 	  </td> -->
+      <!-- 	</tr> -->
+      <!-- <thead> -->
+      <caption>{{ header }}</caption>
       {{ /header }}
       <tbody>
       {{ #sections }}
@@ -18,14 +19,23 @@
 	<td>
 	  {{ read-write-changed-count }}.
 	</td>
+	<!-- <td> -->
+	<!--   {{ kanji-raw }} -->
+	<!-- </td> -->
 	<td>
-	  {{ kanji }}
+	  {{ #kanji-atomized }}{{ #token-dot-start-p }}<u>{{ /token-dot-start-p }}{{ #token-bold-start-p }}<b>{{ /token-bold-start-p }}{{ #chr }}{{ chr }}{{ /chr }}{{ #token-bold-end-p }}</b>{{ /token-bold-end-p }}{{ #token-dot-end-p }}</u>{{ /token-dot-end-p }}{{ /kanji-atomized }}
 	</td>
+	<!-- <td> -->
+	<!--   {{ hiragana-raw }} -->
+	<!-- </td> -->
 	<td>
-	  {{ hiragana }}
+	  {{ #hiragana-atomized }}{{ #token-underline-start-p }}<u>{{ /token-underline-start-p }}{{ #chr }}{{ chr }}{{ /chr }}{{ #token-underline-end-p }}</u>{{ /token-underline-end-p }}{{ /hiragana-atomized }}
 	</td>
 	<td>
 	  {{ meaning }}
+	</td>
+	<td>
+	  {{ kanji-sightings }}
 	</td>
 	<td>
 	  {{ section }}
