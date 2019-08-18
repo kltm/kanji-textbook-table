@@ -33,6 +33,13 @@
        border: 1px solid black;
        padding: 8px;
       }
+      .align-top {
+       vertical-align:text-top;
+      }
+      .align-middle {
+       vertical-align:middle;
+       text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -54,10 +61,10 @@
 	  <td rowspan="2">
 	    {{ read-write-changed-count }}
 	  </td>
-	  <td>
-	    TODO
-	  </td>
-	  <td class="big-kanji">
+	  <!-- <td> -->
+	  <!--   TODO -->
+	  <!-- </td> -->
+	  <td class="big-kanji align-middle" colspan="2">
 	    {{ kanji-raw }}
 	  </td>
 	  <td>
@@ -78,6 +85,9 @@
 	    {{ #radical-example-list }}
 	    <b>{{ kanji }}</b>&nbsp;
 	    {{ /radical-example-list }}
+	    {{ #radical-example-notes }}
+	    <small>{{ radical-example-notes }}</small>
+	    {{ /radical-example-notes }}
 	  </td>
 	</tr>
 	<tr class="bottom-tr">
@@ -96,7 +106,7 @@
 	    &nbsp;&nbsp;&nbsp;{{ reading }}
 	    {{ /meaning-list }}
 	  </td>
-	  <td colspan="3">
+	  <td colspan="3" class="align-top">
 	    {{ #example-word-list-enriched }}
 	    {{ #japanese.highlighted-p }}
 	    <span class="highlight">
