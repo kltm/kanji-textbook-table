@@ -2,9 +2,36 @@
 <html>
   <head>
     <style>
+      .big-kanji {
+       font-size: 50px;
+      }
+      .fade {
+       color: #888888;
+      }
+      .highlight {
+       background-color: #dddddd;
+      }
+       table {
+       border: 1px solid black;
+       border-bottom: 2px solid black;
+       border-left: 2px solid black;
+       border-right: 2px solid black;
+       border-collapse: collapse;
+       margin-top: 2em;
+       margin-left: 5em;
+       margin-right: 5em;
+      }
+      .top-tr {
+       border-top: 2px solid black;
+      }
+      .bottom-tr {
+      }
+       caption {
+       margin-bottom: 1em;
+      }
       td {
-      border: 1px solid black;
-      margin: 0px;
+       border: 1px solid black;
+       padding: 8px;
       }
     </style>
   </head>
@@ -23,31 +50,67 @@
       {{ /header }}
       <tbody>
 	{{ #sections }}
-	<tr>
+	<tr class="top-tr">
 	  <td rowspan="2">
-	    {{ read-write-changed-count }}.
+	    {{ read-write-changed-count }}
 	  </td>
 	  <td>
 	    TODO
 	  </td>
-	  <td>
+	  <td class="big-kanji">
 	    {{ kanji-raw }}
 	  </td>
 	  <td>
 	    TODO
 	  </td>
 	  <td>
-	    {{ radical-raw }}
+	    <span class="fade">部首</span>
 	    <br />
-	    {{ radical-example-raw }}
+	    {{ #radical-list }}
+	    <b>{{ character }}</b>&nbsp;
+	    {{ /radical-list }}
+	    <br />
+	    {{ #radical-meaning-list }}
+	    &nbsp;&nbsp;<small>{{ meaning }}</small>
+	    <br />
+	    {{ /radical-meaning-list }}
+	    例:
+	    {{ #radical-example-list }}
+	    <b>{{ kanji }}</b>&nbsp;
+	    {{ /radical-example-list }}
 	  </td>
 	</tr>
-	<tr>
+	<tr class="bottom-tr">
 	  <td colspan="2">
-	    {{ meaning-raw }}
+	    {{ #reading-list-enriched }}
+	    {{ #highlighted-p }}
+	    <span class="highlight">{{ reading }}</span>
+	    {{ /highlighted-p }}
+	    {{ ^highlighted-p }}
+	    {{ reading }}
+	    {{ /highlighted-p }}
+	    <br />
+	    {{ /reading-list-enriched }}
+	    {{ #meaning-list }}
+	    <br />
+	    &nbsp;&nbsp;&nbsp;{{ reading }}
+	    {{ /meaning-list }}
 	  </td>
 	  <td colspan="3">
-	    {{ example-word-raw }}
+	    {{ #example-word-list-enriched }}
+	    {{ #japanese.highlighted-p }}
+	    <span class="highlight">
+	    {{ /japanese.highlighted-p }}
+	    {{ japanese.word }}
+	    &nbsp;&nbsp;&nbsp;
+	    {{ hiragana.word }}
+	    &nbsp;&nbsp;&nbsp;
+	    {{ english.word }}
+	    {{ #japanese.highlighted-p }}
+	    </span>
+	    {{ /japanese.highlighted-p }}
+	    <br />
+	    {{ /example-word-list-enriched }}
 	  </td>
 	</tr>
 	{{ /sections }}

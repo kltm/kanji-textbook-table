@@ -133,6 +133,59 @@ def main():
                     if data_object["read-write"] == "W":
                         data_object["read-write-header"] = "書けなければいけない漢字"
 
+                    ## Break down the reading field csvs to get
+                    ## highlighting, etc.
+                    reading_hi_list = [ x.strip() for x in data_object["reading-highlighted-raw"].split(",")]
+                    data_object["reading-highlighted-list"] = reading_hi_list
+                    reading_list = [ x.strip() for x in data_object["reading-raw"].split(",")]
+                    reading_enriched = []
+                    for reading_item in reading_list:
+                        if reading_item in reading_hi_list:
+                            reading_enriched.append({"highlighted-p": True,
+                                                     "reading": reading_item})
+                        else:
+                            reading_enriched.append({"highlighted-p": False,
+                                                     "reading": reading_item})
+                    data_object["reading-list-enriched"] = reading_enriched
+
+
+                    ## Break down the meaning field
+                    meaning_list = [ {"reading": x.strip()} for x in data_object["meaning-raw"].split("+") ]
+                    data_object["meaning-list"] = meaning_list
+
+                    ## Break down the somewhat complicated example
+                    ## fields.
+                    exwrd_enriched = []
+                    ## highlighted-example-word
+                    exwrd_hi_list = [ x.strip() for x in data_object["example-word-highlighted-raw"].split("+")]
+                    data_object["example-word-highlighted-list"] = reading_hi_list
+                    ## example-word
+                    exwrd_pre_list = [ x.strip() for x in data_object["example-word-raw"].split("|") ]
+                    for exwrd_pre in exwrd_pre_list:
+                        ex_triple = [ x.strip() for x in exwrd_pre.split("+") ]
+                        if not len(ex_triple) == 3:
+                            die_screaming('ERROR: malformed example word with "'+exwrd_pre+'" at '+ str(i) +': '+ '\t'.join(line))
+                        else:
+                            exwrd_enriched.append({"japanese":
+                                                   {"word": ex_triple[0],
+                                                    "highlighted-p": False if ex_triple[0] not in exwrd_hi_list else True},
+                                                   "hiragana":
+                                                   {"word": ex_triple[1],
+                                                    "highlighted-p": False if ex_triple[1] not in exwrd_hi_list else True},
+                                                   "english":
+                                                   {"word": ex_triple[2],
+                                                    "highlighted-p": False if ex_triple[2] not in exwrd_hi_list else True}})
+                    data_object["example-word-list-enriched"] = exwrd_enriched
+
+                    ## Radicals.
+                    radical_list = [ {"character": x.strip()} for x in data_object["radical-raw"].split(",") ]
+                    data_object["radical-list"] = radical_list
+                    radical_meaning_list = [] if not data_object["radical-meaning-raw"] else [ {"meaning": x.strip()} for x in data_object["radical-meaning-raw"].split(",") ]
+                    data_object["radical-meaning-list"] = radical_meaning_list
+                    radical_example_list = [ {"kanji": x.strip()} for x in data_object["radical-example-raw"].split(",") ]
+                    data_object["radical-example-list"] = radical_example_list
+
+
                     # ## Atomize the two strings that will need detailed
                     # ## highlighting.
                     # data_object["kanji-atomized"] = [{"chr": x} for x in list(data_object["kanji-raw"])]
