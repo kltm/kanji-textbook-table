@@ -6,7 +6,7 @@
 ####  python3 jalphabetical-bin.py --help
 ####
 #### Get report of current problems and/or bin:
-####  python3 jalphabetical-bin.py --pattern vocab-list --input /tmp/input.json --output /tmp/output.json
+####  jalphabetical-bin.py --pattern vocab-list --input /tmp/parsed-vocab-list.json --output /tmp/jalphed-vocab-list.json
 ####
 
 import sys
@@ -64,14 +64,14 @@ def main():
         upper_set_field = "chapter"
         section_field = "section"
         jalphabetical_order = [
-            "あ", "い", "う", "え", "お",
+            "あ", "い", "う", "え", "お", "ぉ",
             "か", "が", "き", "ぎ", "く", "ぐ", "け", "げ", "こ", "ご",
             "さ", "ざ", "し", "じ", "す", "ず", "せ", "ぜ", "そ", "ぞ",
             "た", "だ", "ち", "ぢ", "つ", "っ", "づ", "て", "で", "と", "ど",
             "な", "に", "ぬ", "ね", "の",
             "は", "ば", "ぱ", "ひ", "び", "ぴ", "ふ", "ぶ", "ぷ", "へ", "べ", "ぺ", "ほ", "ぼ", "ぽ",
             "ま", "み", "む", "め", "も",
-            "や", "ゆ", "よ",
+            "や", "ゃ", "ゆ", "ゅ", "よ", "ょ",
             "ら", "り", "る", "れ", "ろ",
             "わ", "を",
             "ん"]
@@ -93,6 +93,7 @@ def main():
             "う": "う",
             "え": "え",
             "お": "お",
+            "ぉ": "お",
             "か": "か",
             "が": "か",
             "き": "き",
@@ -150,8 +151,11 @@ def main():
             "め": "め",
             "も": "も",
             "や": "や",
+            "ゃ": "や",
             "ゆ": "ゆ",
+            "ゅ": "ゆ",
             "よ": "よ",
+            "ょ": "よ",
             "ら": "ら",
             "り": "り",
             "る": "る",
@@ -168,111 +172,86 @@ def main():
     with open(args.input, 'r') as json_in_f:
         data_list = json.load(json_in_f)
 
-    ## Sort the data into the different chapter sets.
-    upper_set_field = "level"
-    upper_sets = {}
+    ## Sort the items into the different letter sets.
+    letter_sets = {}
     for item in data_list:
         #print(item)
         #print(item[upper_set_field])
-        upper = str(item[upper_set_field])
-        #print(upper + ".")
-        if not upper in upper_sets:
-            upper_sets[upper] = []
-        upper_sets[upper].append(item)
-    print(", ".join(sorted(upper_sets.keys(), key=int)))
+        reading = str(item["reading"])
+        pre_letter = reading[0]
+        letter = section_field_membership[pre_letter] if section_field_membership[pre_letter] else "?"
+        if not letter in letter_sets:
+            letter_sets[letter] = []
+        letter_sets[letter].append(item)
+    print(", ".join(sorted(letter_sets.keys())))
 
     ## Loop over the different chapters to create the output.
-    sectioned_upper_sets = []
-    for chi in sorted(upper_sets.keys(), key=int):
-        data_list = upper_sets[chi]
+    ordered_letter_sets = []
+    for l in sorted(letter_sets.keys()): # actually seems to sort the japanese correctly
+        ## Grab a letter set.
+        data_list = letter_sets[l]
 
-        ## Sort the upper/chapter sets into sections sets.
-        sections = {}
-        for item in data_list:
-            section = item[section_field]
-            if not section in sections:
-                sections[section] = []
-            sections[section].append(item)
+        ## Order the data list of the letter set.
+        ## First, jalphabetically sort the whole thing.
+        ## Order the points list using a custom comparison
+        def jsort(b, a):
 
-        ## Manually add the sections in the order we want them to
-        ## appear in the chapter.
-        ## Cross-check against what we have.
-        print(", ".join(sorted([str(x) for x in section_field_order])))
-        print(", ".join(sorted([str(x) for x in sections.keys()])))
-        if not set(sections.keys()).issubset(set(section_field_order)):
-            die_screaming('unorderable section header')
+            b_reading = b["reading"]
+            a_reading = a["reading"]
 
-        ## Prepare sections with(out) headers for final rendering as
-        ## separate tables in the chapter docs.
-        sectioned_data_list = []
-        for s in section_field_order:
-            if s in sections:
-                sectioned_data_list.append({"header": s, "sections": sections[s]})
+            print("---")
 
-        sectioned_upper_sets.append({upper_set_field: str(chi), "data": sectioned_data_list})
+            ## Remove annoying crap.
+            for bad in ["（", "）", "(", ")", "～", "~", " ", "・", "…", "."]:
+                b_reading = b_reading.replace(bad, "")
+                a_reading = a_reading.replace(bad, "")
 
-        ## Write everything out.
-        print(json.dumps(sectioned_data_list, indent = 4))
-        with open(args.output, 'w') as output:
-            output.write(json.dumps(sectioned_upper_sets, indent = 4))
+            ## Find the shorter word; remember which is which.
+            shorter_word = None
+            longer_word = None
+            shorter_word_is_a_p = None
+            if len(b_reading) <  len(a_reading):
+                shorter_word = b_reading
+                longer_word = a_reading
+                shorter_word_is_a_p = False
+            else:
+                shorter_word = a_reading
+                longer_word = b_reading
+                shorter_word_is_a_p = True
 
-    # ## First, jalphabetically sort the whole thing.
-    # ## Order the points list using a custom comparison
-    # def jsort(b, a):
-    #     b_reading = b["reading"]
-    #     a_reading = a["reading"]
-    #     if a["point"] > b["point"]:
-    #         return 1
-    #     elif a["point"] < b["point"]:
-    #         return -1
-    #     else:
-    # sorted_data_list = sorted(data_list, key=functools.cmp_to_key(jsort))
+            ## Pick the letter at position and compare.
+            shorter_word_is_first_p = True
+            for i, swl in enumerate(shorter_word):
+                lwl = longer_word[i]
+                print(swl, lwl)
+                if swl == lwl:
+                    pass
+                if jalphabetical_order.index(swl) < jalphabetical_order.index(lwl):
+                    shorter_word_is_first_p = True
+                    break
+                if jalphabetical_order.index(swl) > jalphabetical_order.index(lwl):
+                    shorter_word_is_first_p = False
+                    break
 
+            if shorter_word_is_first_p and shorter_word_is_a_p:
+                return 1
+            elif shorter_word_is_first_p and not shorter_word_is_a_p:
+                return -1
+            elif not shorter_word_is_first_p and shorter_word_is_a_p:
+                return -1
+            elif not shorter_word_is_first_p and not shorter_word_is_a_p:
+                return 1
+            else:
+                return 0
+        sorted_data_list = sorted(data_list, key=functools.cmp_to_key(jsort))
 
-    # ## Sort the data into the different chapter sets.
-    # upper_sets = {}
-    # for item in data_list:
-    #     chapter = str(item[upper_set_field])
-    #     #print(chapter)
-    #     if not chapter in upper_sets:
-    #         upper_sets[chapter] = []
-    #     upper_sets[chapter].append(item)
-    # #print(", ".join(sorted(upper_sets.keys(), key=int)))
-
-    # ## Loop over the different chapters to create the output.
-    # sectioned_upper_sets = []
-    # for chi in sorted(upper_sets.keys(), key=int):
-    #     data_list = upper_sets[chi]
-
-    #     ## Sort the upper/chapter sets into sections sets.
-    #     sections = {}
-    #     for item in data_list:
-    #         section = item[section_field]
-    #         if not section in sections:
-    #             sections[section] = []
-    #         sections[section].append(item)
-
-    #     ## Manually add the sections in the order we want them to
-    #     ## appear in the chapter.
-    #     ## Cross-check against what we have.
-    #     print(", ".join(sorted([str(x) for x in section_field_order])))
-    #     print(", ".join(sorted([str(x) for x in sections.keys()])))
-    #     if not set(sections.keys()).issubset(set(section_field_order)):
-    #         die_screaming('unorderable section header')
-
-    #     ## Prepare sections with(out) headers for final rendering as
-    #     ## separate tables in the chapter docs.
-    #     sectioned_data_list = []
-    #     for s in section_field_order:
-    #         if s in sections:
-    #             sectioned_data_list.append({"header": s, "sections": sections[s]})
-
-    #     sectioned_upper_sets.append({upper_set_field: str(chi), "data": sectioned_data_list})
+        ordered_letter_sets.append({"letter": l,
+                                    "data": sorted_data_list})
 
     ## Write everything out.
-#    print(json.dumps(sectioned_data_list, indent = 4))
-    #     with open(args.output, 'w') as output:
-    #         output.write(json.dumps(sectioned_upper_sets, indent = 4))
+    print(json.dumps(ordered_letter_sets, indent = 4))
+    with open(args.output, 'w') as output:
+        output.write(json.dumps(ordered_letter_sets, indent = 4))
 
 ## You saw it coming...
 if __name__ == '__main__':
