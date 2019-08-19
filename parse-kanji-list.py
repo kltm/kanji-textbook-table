@@ -9,7 +9,7 @@
 ####  python3 parse-kanji-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字リス ト.tsv --output /tmp/parsed-kanji-list.json
 ####
 #### As part of a pipeline:
-####  python3 parse-kanji-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字リスト.tsv --output /tmp/parsed-kanji-list.json && python3 chapter-bin.py -v --pattern kanji-list --input /tmp/parsed-kanji-list.json --output /tmp/chapters-kl.json && python3 apply-to-chapters.py --input /tmp/chapters-kl.json
+####  python3 parse-kanji-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字リス ト\(1\).tsv --output /tmp/parsed-kanji-list.json && python3 chapter-bin.py -v --pattern kanji-list --input /tmp/parsed-kanji-list.json --output /tmp/chapters-kl.json && python3 apply-to-chapters.py --template manual-html-kanji-list.template.html --input /tmp/chapters-kl.json --output /tmp/ch-kl
 ####
 
 import sys
