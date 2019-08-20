@@ -1,5 +1,5 @@
 
-<html>
+<html lang="ja">
   <head>
     <style>
       .big-kanji {
@@ -9,9 +9,11 @@
        color: #888888;
       }
       .highlight {
-       background-color: #dddddd;
+      background-color: #dddddd;
+      -webkit-print-color-adjust: exact;
       }
-       table {
+      table {
+       width: 80%;
        border: 1px solid black;
        border-bottom: 2px solid black;
        border-left: 2px solid black;
@@ -40,30 +42,31 @@
        vertical-align:middle;
        text-align: center;
       }
+      .avoid {
+      page-break-inside: avoid !important;
+      margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+      }
     </style>
   </head>
-  <body>
+  <body style="text-align:center;">
     {{ #data }}
-    <table>
-      {{ #header }}
-      <!-- <thead> -->
-      <!-- 	<tr> -->
-      <!-- 	  <td> -->
-      <!-- 	  {{ header }} -->
-      <!-- 	  </td> -->
-      <!-- 	</tr> -->
-      <!-- <thead> -->
-      <caption><b><新しい漢字:{{ header }}></b></caption>
-      {{ /header }}
+    {{ #header }}
+    <!-- <thead> -->
+    <!-- 	<tr> -->
+    <!-- 	  <td> -->
+    <!-- 	  {{ header }} -->
+    <!-- 	  </td> -->
+    <!-- 	</tr> -->
+    <!-- <thead> -->
+    <h4><新しい漢字:{{ header }}></h4>
+    {{ /header }}
+    {{ #sections }}
+    <table class="avoid" style='font-family:"MS Mincho";'>
       <tbody>
-	{{ #sections }}
 	<tr class="top-tr">
 	  <td rowspan="2">
 	    {{ read-write-changed-count }}
 	  </td>
-	  <!-- <td> -->
-	  <!--   TODO -->
-	  <!-- </td> -->
 	  <td class="big-kanji align-middle" colspan="2">
 	    {{ kanji-raw }}
 	  </td>
@@ -123,9 +126,9 @@
 	    {{ /example-word-list-enriched }}
 	  </td>
 	</tr>
-	{{ /sections }}
       </tbody>
     </table>
+    {{ /sections }}
     {{ /data }}
   </body>
 </html>
