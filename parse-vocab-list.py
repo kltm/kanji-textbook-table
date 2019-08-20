@@ -115,6 +115,20 @@ def main():
                         if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
                             die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
 
+                    ## Make some other mappings for commonly used
+                    ## sections names.
+                    section_names_alt = {#None: "",
+                                         "読み物　一": "R.1",
+                                         "会話　一": "D.1",
+                                         "読み物　二": "R.2",
+                                         "会話　二": "D.2",
+                                         "読み物　三": "R.3",
+                                         "会話　三": "D.3",
+                                         "読み物　四": "R.4",
+                                         "会話　四": "D.4"}
+                    if data_object["section"] in section_names_alt.keys():
+                        data_object["section-alt-en-short"] = section_names_alt[data_object["section"]]
+
                     ## Transform the comma/pipe-separated data raw "Ruby"
                     ## object into something usable, if extant.
                     # LOGGER.info(data_object["raw-ruby"])
