@@ -1,5 +1,5 @@
 
-<html lang="ja">
+<html lang="ja" charset="UTF-8">
   <head>
     <style>
       .big-kanji {
@@ -13,13 +13,16 @@
       -webkit-print-color-adjust: exact;
       }
       table {
-       width: 80%;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
        border: 1px solid black;
        border-bottom: 2px solid black;
        border-left: 2px solid black;
        border-right: 2px solid black;
        border-collapse: collapse;
-       margin-top: 2em;
+       padding-top: 0.5em;
+       margin-top: 0.5em;
        margin-left: 5em;
        margin-right: 5em;
       }
@@ -44,11 +47,16 @@
       }
       .avoid {
       page-break-inside: avoid !important;
-      margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+      /* margin: 4px 0 4px 0; */
+      /* to keep the page break from cutting too close to the text in the div */
+      }
+      body {
+      font-family:Serif;
       }
     </style>
   </head>
-  <body style="text-align:center;">
+  <body>
+    <div style="width:100%; text-align:center;">
     {{ #data }}
     {{ #header }}
     <!-- <thead> -->
@@ -61,7 +69,7 @@
     <h4><新しい漢字:{{ header }}></h4>
     {{ /header }}
     {{ #sections }}
-    <table class="avoid" style='font-family:"MS Mincho";'>
+    <table class="avoid" style="font-family:Serif;">
       <tbody>
 	<tr class="top-tr">
 	  <td rowspan="2">
@@ -130,5 +138,6 @@
     </table>
     {{ /sections }}
     {{ /data }}
+    </div>
   </body>
 </html>
