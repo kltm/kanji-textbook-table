@@ -20,6 +20,7 @@ import pystache
 import json
 import functools
 import os
+import glob
 
 ## Logger basic setup.
 logging.basicConfig(level=logging.INFO)
@@ -62,6 +63,14 @@ def main():
     ## Setup some general metadata checking for the different formats.
     required_total_columns = 14
     required_columns = ["level", "chapter", "read-write", "kanji-raw", "reading-raw", "reading-highlighted-raw", "meaning-raw", "radical-raw", "radical-example-raw", "example-word-raw", "example-word-highlighted-raw"]
+
+    ##
+    kanjialive_lookup = {}
+    with open('/home/sjcarbon/local/src/git/textbook-project-data/kanjialive/ka_data.csv', 'r') as ka_in:
+        ka_in = csv.reader(ka_in, delimiter=',')
+
+        for line in ka_in:
+            kanjialive_lookup[line[0]] = line[1]
 
     ## Bring on all data in one sweep, formatting and adding
     ## appropriate parts to internal format so that we can simply
@@ -184,6 +193,29 @@ def main():
                     data_object["radical-meaning-list"] = radical_meaning_list
                     radical_example_list = [ {"kanji": x.strip()} for x in data_object["radical-example-raw"].split(",") ]
                     data_object["radical-example-list"] = radical_example_list
+
+                    ## Okay, let's experiment with image output.
+                    ## TODO: Check that our directory is in place.
+                    if not data_object["kanji-raw"] in kanjialive_lookup:
+                        if not data_object["kanji-raw"] in ['井', '阪', '俺', '扱', '酔']:
+                            die_screaming(data_object["kanji-raw"]+'<<<')
+                        else:
+                            data_object["kanji-strokes-list"] = []
+                    else:
+                        file_stem = kanjialive_lookup[data_object["kanji-raw"]]
+                        files = glob.glob('/home/sjcarbon/local/src/git/textbook-project-data/kanjialive/kanji_strokes/' + file_stem + '_*')
+                        data_object["kanji-strokes-list"] = []
+                        for i, file in enumerate(files):
+                            data_object["kanji-strokes-list"].append(file_stem + '_' + str(i+1) + '.svg')
+                    # data_object["kanji-strokes-list"] = [
+                    #     'kyuu-na(ku)_1.svg',
+                    #     'kyuu-na(ku)_2.svg',
+                    #     'kyuu-na(ku)_3.svg',
+                    #     'kyuu-na(ku)_4.svg',
+                    #     'kyuu-na(ku)_5.svg',
+                    #     'kyuu-na(ku)_6.svg',
+                    #     'kyuu-na(ku)_7.svg',
+                    #     'kyuu-na(ku)_8.svg']
 
                     ## Onto the pile.
                     data_list.append(data_object)

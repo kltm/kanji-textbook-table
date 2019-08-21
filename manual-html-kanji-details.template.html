@@ -79,7 +79,9 @@
 	    {{ kanji-raw }}
 	  </td>
 	  <td>
-	    TODO
+	    {{ #kanji-strokes-list }}
+	    <img src="file:///home/sjcarbon/local/src/git/textbook-project-data/kanjialive/kanji_strokes/{{ . }}" height="50px" width="50px" />
+	    {{ /kanji-strokes-list }}
 	  </td>
 	  <td>
 	    <span class="fade">部首</span>
