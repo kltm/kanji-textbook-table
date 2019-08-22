@@ -2,6 +2,12 @@
 <html lang="ja" charset="UTF-8">
   <head>
     <style>
+      body {
+       font-family:Serif;
+      }
+      caption {
+       margin-bottom: 1em;
+      }
       .big-kanji {
        font-size: 50px;
       }
@@ -9,13 +15,13 @@
        color: #888888;
       }
       .highlight {
-      background-color: #dddddd;
-      -webkit-print-color-adjust: exact;
+       background-color: #dddddd;
+       -webkit-print-color-adjust: exact;
       }
-      table {
-      width: 80%;
-      margin-left: auto;
-      margin-right: auto;
+      .top-table {
+       width: 80%;
+       margin-left: auto;
+       margin-right: auto;
        border: 1px solid black;
        border-bottom: 2px solid black;
        border-left: 2px solid black;
@@ -26,17 +32,20 @@
        margin-left: 5em;
        margin-right: 5em;
       }
+      .top-table-td {
+       border: 1px solid black;
+       padding: 8px;
+      }
+      .sub-table {
+       width: 100%;
+       margin-left: auto;
+       margin-right: auto;
+       border: 0px;
+      }
       .top-tr {
        border-top: 2px solid black;
       }
       .bottom-tr {
-      }
-       caption {
-       margin-bottom: 1em;
-      }
-      td {
-       border: 1px solid black;
-       padding: 8px;
       }
       .align-top {
        vertical-align:text-top;
@@ -46,12 +55,9 @@
        text-align: center;
       }
       .avoid {
-      page-break-inside: avoid !important;
-      /* margin: 4px 0 4px 0; */
-      /* to keep the page break from cutting too close to the text in the div */
-      }
-      body {
-      font-family:Serif;
+       page-break-inside: avoid !important;
+       /* margin: 4px 0 4px 0; */
+       /* to keep the page break from cutting too close to the text in the div */
       }
     </style>
   </head>
@@ -69,21 +75,21 @@
     <h4><新しい漢字:{{ header }}></h4>
     {{ /header }}
     {{ #sections }}
-    <table class="avoid" style="font-family:Serif;">
+    <table class="top-table avoid" style="font-family:Serif;">
       <tbody>
 	<tr class="top-tr">
-	  <td rowspan="2">
+	  <td rowspan="2" class="top-table-td" width="5%">
 	    {{ read-write-changed-count }}
 	  </td>
-	  <td class="big-kanji align-middle" colspan="2">
+	  <td class="big-kanji align-middle top-table-td" colspan="2" width="10%">
 	    {{ kanji-raw }}
 	  </td>
-	  <td>
+	  <td width="60%" class="top-table-td">
 	    {{ #kanji-strokes-list }}
 	    <img src="file:///home/sjcarbon/local/src/git/textbook-project-data/kanjialive/kanji_strokes/{{ . }}" height="50px" width="50px" />
 	    {{ /kanji-strokes-list }}
 	  </td>
-	  <td>
+	  <td width="20%" class="top-table-td">
 	    <span class="fade">部首</span>
 	    <br />
 	    {{ #radical-list }}
@@ -104,41 +110,62 @@
 	  </td>
 	</tr>
 	<tr class="bottom-tr">
-	  <td colspan="2">
-	    {{ #reading-list-enriched }}
-	    {{ #highlighted-p }}
-	    <span class="highlight">{{ reading }}</span>
-	    {{ /highlighted-p }}
-	    {{ ^highlighted-p }}
-	    {{ reading }}
-	    {{ /highlighted-p }}
-	    <br />
-	    {{ /reading-list-enriched }}
-	    {{ #meaning-list }}
-	    <br />
-	    &nbsp;&nbsp;&nbsp;{{ reading }}
-	    {{ /meaning-list }}
-	  </td>
-	  <td colspan="3" class="align-top">
-	    {{ #example-word-list-enriched }}
-	    {{ #japanese.highlighted-p }}
-	    <span class="highlight">
-	    {{ /japanese.highlighted-p }}
-	    {{ japanese.word }}
-	    &nbsp;&nbsp;&nbsp;
-	    {{ hiragana.word }}
-	    &nbsp;&nbsp;&nbsp;
-	    {{ english.word }}
-	    {{ #japanese.highlighted-p }}
-	    </span>
-	    {{ /japanese.highlighted-p }}
-	    <br />
-	    {{ /example-word-list-enriched }}
+	  <td colspan="4" class="top-table-td">
+
+	    <table class="sub-table">
+	      <tr>
+		<td width="20%" style="border-right:1px solid black; padding-right:3px; vertical-align:text-top;">
+		  <table class="sub-table">
+		    {{ #reading-list-enriched }}
+		    {{ #highlighted-p }}
+		    <tr class="highlight">
+		      <td>{{ reading }}</td>
+		    </tr>
+		    {{ /highlighted-p }}
+		    {{ ^highlighted-p }}
+		    <tr>
+		      <td>{{ reading }}</td>
+		    </tr>
+		    {{ /highlighted-p }}
+		    {{ /reading-list-enriched }}
+		    {{ #meaning-list }}
+		    <tr>
+		      <td>{{ reading }}</td>
+		    </tr>
+		    {{ /meaning-list }}
+		  </table>
+		</td>
+		<td style="vertical-align:text-top;">
+		  <table class="sub-table">
+		      {{ #example-word-list-enriched }}
+		      {{ #japanese.highlighted-p }}
+		      <tr class="highlight">
+	              {{ /japanese.highlighted-p }}
+	              {{ ^japanese.highlighted-p }}
+		      <tr>
+	              {{ /japanese.highlighted-p }}
+		        <td width="30%">
+			  {{ japanese.word }}
+		        </td>
+		        <td width="30%">
+			  {{ hiragana.word }}
+		        </td>
+		        <td width="40%">
+			  {{ english.word }}
+		        </td>
+		      </tr>
+	              {{ /example-word-list-enriched }}
+		    </table>
+		  </td>
+	      </tr>
+	    </table>
 	  </td>
 	</tr>
       </tbody>
     </table>
     {{ /sections }}
+    <div style="page-break-after: always;">&nbsp;</div>
+    <div style="page-break-before: always;">&nbsp;</div>
     {{ /data }}
     </div>
   </body>
