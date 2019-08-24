@@ -17,17 +17,10 @@
   </head>
   <body>
     {{ #data }}
+    {{ #header }}
+    <h4 style="text-align:center;">{{ header }}</h4>
+    {{ /header }}
     <table>
-      {{ #header }}
-      <!-- <thead> -->
-      <!-- 	<tr> -->
-      <!-- 	  <td> -->
-      <!-- 	  {{ header }} -->
-      <!-- 	  </td> -->
-      <!-- 	</tr> -->
-      <!-- <thead> -->
-      <caption>{{ header }}</caption>
-      {{ /header }}
       <tbody>
       {{ #sections }}
       <tr>
