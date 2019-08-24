@@ -3,34 +3,34 @@
   <head>
     <style>
       body {
-       font-family:Serif;
+      font-family:Serif;
+      }
+      table {
+       font-size: 12px;
       }
       caption {
        margin-bottom: 1em;
       }
       .big-kanji {
-       font-size: 50px;
+       font-size: 40px;
       }
       .fade {
-       color: #888888;
       }
       .highlight {
        background-color: #dddddd;
        -webkit-print-color-adjust: exact;
       }
       .top-table {
-       width: 80%;
+       width: 85%;
        margin-left: auto;
        margin-right: auto;
        border: 1px solid black;
-       border-bottom: 2px solid black;
-       border-left: 2px solid black;
-       border-right: 2px solid black;
+       border-bottom: 1px solid black;
+       border-left: 1px solid black;
+       border-right: 1px solid black;
        border-collapse: collapse;
        padding-top: 0.5em;
        margin-top: 0.5em;
-       margin-left: 5em;
-       margin-right: 5em;
       }
       .top-table-td {
        border: 1px solid black;
@@ -43,7 +43,7 @@
        border: 0px;
       }
       .top-tr {
-       border-top: 2px solid black;
+       border-top: 1px solid black;
       }
       .bottom-tr {
       }
@@ -78,15 +78,15 @@
     <table class="top-table avoid" style="font-family:Serif;">
       <tbody>
 	<tr class="top-tr">
-	  <td rowspan="2" class="top-table-td" width="5%">
+	  <td rowspan="2" class="top-table-td align-middle" width="3%">
 	    {{ read-write-changed-count }}
 	  </td>
-	  <td class="big-kanji align-middle top-table-td" colspan="2" width="10%">
+	  <td class="big-kanji align-middle top-table-td" colspan="2" width="12%">
 	    {{ kanji-raw }}
 	  </td>
 	  <td width="60%" class="top-table-td">
 	    {{ #kanji-strokes-list }}
-	    <img src="file:///home/sjcarbon/local/src/git/textbook-project-data/kanjialive/kanji_strokes/{{ . }}" height="50px" width="50px" />
+	    <img src="file:///home/sjcarbon/local/src/git/textbook-project-data/kanjialive/kanji_strokes/{{ . }}" height="40px" width="40px" />
 	    {{ /kanji-strokes-list }}
 	  </td>
 	  <td width="20%" class="top-table-td">
@@ -114,7 +114,7 @@
 
 	    <table class="sub-table">
 	      <tr>
-		<td width="20%" style="border-right:1px solid black; padding-right:3px; vertical-align:text-top;">
+		<td width="22%" style="border-right:1px solid black; padding-right:3px; vertical-align:text-top;">
 		  <table class="sub-table">
 		    {{ #reading-list-enriched }}
 		    {{ #highlighted-p }}
