@@ -194,28 +194,30 @@ def main():
                     radical_example_list = [ {"kanji": x.strip()} for x in data_object["radical-example-raw"].split(",") ]
                     data_object["radical-example-list"] = radical_example_list
 
+                    ## Manipulate our objects to make sure that we
+                    ## have the correct mapping in place.
+                    manual_list = ['井', '阪', '俺', '扱', '酔']
+                    kanjialive_lookup['井'] = 'shou(i)'
+                    kanjialive_lookup['阪'] = 'han(saka)'
+                    kanjialive_lookup['俺'] = 'en(ore)'
+                    kanjialive_lookup['扱'] = 'sou(atsukau)'
+                    kanjialive_lookup['酔'] = 'sui(yo)'
+
                     ## Okay, let's experiment with image output.
                     ## TODO: Check that our directory is in place.
-                    if not data_object["kanji-raw"] in kanjialive_lookup:
-                        if not data_object["kanji-raw"] in ['井', '阪', '俺', '扱', '酔']:
-                            die_screaming(data_object["kanji-raw"]+'<<<')
-                        else:
-                            data_object["kanji-strokes-list"] = []
+
+                    if not data_object["kanji-raw"] in kanjialive_lookup and not data_object["kanji-raw"] in manual_list:
+                        die_screaming("Unknown kanji: "+data_object["kanji-raw"])
                     else:
                         file_stem = kanjialive_lookup[data_object["kanji-raw"]]
                         files = glob.glob('/home/sjcarbon/local/src/git/textbook-project-data/kanjialive/kanji_strokes/' + file_stem + '_*')
+                        data_object["kanji-strokes-list-manual"] = []
                         data_object["kanji-strokes-list"] = []
                         for i, file in enumerate(files):
-                            data_object["kanji-strokes-list"].append(file_stem + '_' + str(i+1) + '.svg')
-                    # data_object["kanji-strokes-list"] = [
-                    #     'kyuu-na(ku)_1.svg',
-                    #     'kyuu-na(ku)_2.svg',
-                    #     'kyuu-na(ku)_3.svg',
-                    #     'kyuu-na(ku)_4.svg',
-                    #     'kyuu-na(ku)_5.svg',
-                    #     'kyuu-na(ku)_6.svg',
-                    #     'kyuu-na(ku)_7.svg',
-                    #     'kyuu-na(ku)_8.svg']
+                            if data_object["kanji-raw"] in manual_list:
+                                data_object["kanji-strokes-list-manual"].append(file_stem + '_' + str(i+1) + '.png')
+                            else:
+                                data_object["kanji-strokes-list"].append(file_stem + '_' + str(i+1) + '.svg')
 
                     ## Onto the pile.
                     data_list.append(data_object)
