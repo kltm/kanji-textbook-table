@@ -11,6 +11,9 @@
 #### As part of a pipeline:
 ####  python3 parse-kanji-details.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字表\(6\).tsv --output /tmp/parsed-kanji-details.json && python3 chapter-bin.py --input /tmp/parsed-kanji-details.json --pattern kanji-details --output /tmp/binned-kanji.json && python3 apply-to-chapters.py --input /tmp/binned-kanji.json --template manual-html-kanji-details.template.html --output /tmp/kh-ch
 ####
+#### As part of a pipeline, with repo specified:
+####  python3 parse-kanji-details.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字表\(6\).tsv --repo /home/sjcarbon/local/src/git/textbook-project-data --output /tmp/parsed-kanji-details.json && python3 chapter-bin.py --input /tmp/parsed-kanji-details.json --pattern kanji-details --output /tmp/binned-kanji.json && python3 apply-to-chapters.py --input /tmp/binned-kanji.json --template manual-html-kanji-details.template.html --output /tmp/kh-ch
+####
 
 import sys
 import argparse
@@ -42,6 +45,8 @@ def main():
                         help='More verbose output')
     parser.add_argument('-t', '--tsv',
                         help='The TSV data file to read in')
+    parser.add_argument('-r', '--repo',
+                        help='[optional] The path to this repo')
     parser.add_argument('-o', '--output',
                         help='The file to output to')
     args = parser.parse_args()
@@ -56,6 +61,10 @@ def main():
         die_screaming('need an input tsv argument')
     LOGGER.info('Will use "' + args.tsv + '" as data')
 
+    if not args.repo:
+        args.repo = os.getcwd()
+    LOGGER.info('Will output to: ' + args.output)
+
     if not args.output:
         die_screaming('need an output file argument')
     LOGGER.info('Will output to: ' + args.output)
@@ -66,7 +75,7 @@ def main():
 
     ##
     kanjialive_lookup = {}
-    with open('/home/sjcarbon/local/src/git/textbook-project-data/kanjialive/ka_data.csv', 'r') as ka_in:
+    with open(args.repo + '/kanjialive/ka_data.csv', 'r') as ka_in:
         ka_in = csv.reader(ka_in, delimiter=',')
 
         for line in ka_in:
@@ -210,9 +219,10 @@ def main():
                         die_screaming("Unknown kanji: "+data_object["kanji-raw"])
                     else:
                         file_stem = kanjialive_lookup[data_object["kanji-raw"]]
-                        files = glob.glob('/home/sjcarbon/local/src/git/textbook-project-data/kanjialive/kanji_strokes/' + file_stem + '_*')
+                        files = glob.glob(args.repo + '/kanjialive/kanji_strokes/' + file_stem + '_*')
                         data_object["kanji-strokes-list-manual"] = []
                         data_object["kanji-strokes-list"] = []
+                        data_object["kanji-strokes-base"] = args.repo + '/kanjialive/kanji_strokes/'
                         for i, file in enumerate(files):
                             if data_object["kanji-raw"] in manual_list:
                                 data_object["kanji-strokes-list-manual"].append(file_stem + '_' + str(i+1) + '.png')
