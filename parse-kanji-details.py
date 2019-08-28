@@ -174,9 +174,10 @@ def main():
                     ## Break down the somewhat complicated example
                     ## fields.
                     exwrd_enriched = []
-                    ## highlighted-example-word
-                    exwrd_hi_list = [ x.strip() for x in data_object["example-word-highlighted-raw"].split("+")]
-                    data_object["example-word-highlighted-list"] = reading_hi_list
+                    ## highlighted-example-word hightlight list to use
+                    ## as key to identify for highlighting.
+                    exwrd_hi_list = "^".join([ x.strip() for x in data_object["example-word-highlighted-raw"].split("+")])
+                    data_object["example-word-highlighted-list"] = exwrd_hi_list
                     ## example-word
                     exwrd_pre_list = [ x.strip() for x in data_object["example-word-raw"].split("|") ]
                     for exwrd_pre in exwrd_pre_list:
@@ -186,13 +187,13 @@ def main():
                         else:
                             exwrd_enriched.append({"japanese":
                                                    {"word": ex_triple[0],
-                                                    "highlighted-p": False if ex_triple[0] not in exwrd_hi_list else True},
+                                                    "highlighted-p": False if "^".join(ex_triple) not in exwrd_hi_list else True},
                                                    "hiragana":
                                                    {"word": ex_triple[1],
-                                                    "highlighted-p": False if ex_triple[1] not in exwrd_hi_list else True},
+                                                    "highlighted-p": False if "^".join(ex_triple) not in exwrd_hi_list else True},
                                                    "english":
                                                    {"word": ex_triple[2],
-                                                    "highlighted-p": False if ex_triple[2] not in exwrd_hi_list else True}})
+                                                    "highlighted-p": False if "^".join(ex_triple) not in exwrd_hi_list else True}})
                     data_object["example-word-list-enriched"] = exwrd_enriched
 
                     ## Radicals.
