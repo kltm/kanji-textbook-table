@@ -9,10 +9,10 @@
 ####  python3 parse-kanji-details.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字表\(1\).tsv --output /tmp/parsed-kanji-details.json
 ####
 #### As part of a pipeline:
-####  python3 parse-kanji-details.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字表\(6\).tsv --output /tmp/parsed-kanji-details.json && python3 chapter-bin.py --input /tmp/parsed-kanji-details.json --pattern kanji-details --output /tmp/binned-kanji.json && python3 apply-to-chapters.py --input /tmp/binned-kanji.json --template manual-html-kanji-details.template.html --output /tmp/kh-ch
+####  python3 parse-kanji-details.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字表\(8\).tsv --output /tmp/parsed-kanji-details.json && python3 chapter-bin.py --input /tmp/parsed-kanji-details.json --pattern kanji-details --output /tmp/binned-kanji.json && python3 apply-to-chapters.py --input /tmp/binned-kanji.json --template manual-html-kanji-details.template.html --output /tmp/kh-ch
 ####
 #### As part of a pipeline, with repo specified:
-####  python3 parse-kanji-details.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字表\(6\).tsv --repo /home/sjcarbon/local/src/git/textbook-project-data --output /tmp/parsed-kanji-details.json && python3 chapter-bin.py --input /tmp/parsed-kanji-details.json --pattern kanji-details --output /tmp/binned-kanji.json && python3 apply-to-chapters.py --input /tmp/binned-kanji.json --template manual-html-kanji-details.template.html --output /tmp/kh-ch
+####  python3 parse-kanji-details.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 漢字表\(8\).tsv --repo /home/sjcarbon/local/src/git/textbook-project-data --output /tmp/parsed-kanji-details.json && python3 chapter-bin.py --input /tmp/parsed-kanji-details.json --pattern kanji-details --output /tmp/binned-kanji.json && python3 apply-to-chapters.py --input /tmp/binned-kanji.json --template manual-html-kanji-details.template.html --output /tmp/kh-ch
 ####
 
 import sys
@@ -71,7 +71,7 @@ def main():
 
     ## Setup some general metadata checking for the different formats.
     required_total_columns = 14
-    required_columns = ["level", "chapter", "read-write", "kanji-raw", "reading-raw", "reading-highlighted-raw", "meaning-raw", "radical-raw", "radical-example-raw", "example-word-raw", "example-word-highlighted-raw"]
+    required_columns = ["level", "chapter", "read-write", "kanji-raw", "reading-raw", "meaning-raw", "radical-raw", "radical-example-raw", "example-word-raw", "example-word-highlighted-raw"]
 
     ##
     kanjialive_lookup = {}
@@ -122,7 +122,7 @@ def main():
                     data_object["read-write"] = line[2] if (type(line[2]) is str and line[2] in ["W", "R"]) else None # req
                     data_object["kanji-raw"] = str(line[3]) # req
                     data_object["reading-raw"] = str(line[4]) # req
-                    data_object["reading-highlighted-raw"] = str(line[5]) # req
+                    data_object["reading-highlighted-raw"] = line[5] if (type(line[5]) is str and len(line[5]) > 0) else None # opt
                     data_object["meaning-raw"] = line[6] # req
                     data_object["radical-raw"] = line[7] # req
                     data_object["radical-meaning-raw"] = line[8] if (type(line[8]) is str and len(line[8]) > 0) else None # opt
@@ -153,7 +153,10 @@ def main():
 
                     ## Break down the reading field csvs to get
                     ## highlighting, etc.
-                    reading_hi_list = [ x.strip() for x in data_object["reading-highlighted-raw"].split(",")]
+                    if data_object["reading-highlighted-raw"]:
+                        reading_hi_list = [ x.strip() for x in data_object["reading-highlighted-raw"].split(",")]
+                    else:
+                        reading_hi_list = []
                     data_object["reading-highlighted-list"] = reading_hi_list
                     reading_list = [ x.strip() for x in data_object["reading-raw"].split(",")]
                     reading_enriched = []

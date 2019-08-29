@@ -9,10 +9,10 @@
 ####  python3 parse-vocab-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 単語リス ト\(4\).tsv --output /tmp/parsed-vocab-list.json
 ####
 #### As part of a pipeline for vocab list:
-####  python3 parse-vocab-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 単語リス ト\(4\).tsv --output /tmp/parsed-vocab-list.json && python3 chapter-bin.py -v --input /tmp/parsed-vocab-list.json --output /tmp/chapters.json && python3 apply-to-chapters.py --input /tmp/chapters.json --template ./word-html-frame.template.html --output /tmp/chapter
+####  python3 parse-vocab-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 単語リス ト\(13\).tsv --output /tmp/parsed-vocab-list.json && python3 chapter-bin.py -v --input /tmp/parsed-vocab-list.json --output /tmp/chapters.json && python3 apply-to-chapters.py --input /tmp/chapters.json --template ./word-html-frame.template.html --output /tmp/chapter
 ####
 #### As part of a pipeline for glossary:
-####  python3 parse-vocab-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 単語リス ト\(12\).tsv --output /tmp/parsed-vocab-list.json && python3 jalphabetical-bin.py --pattern vocab-list --input /tmp/parsed-vocab-list.json --output /tmp/jalphed-vocab-list.json && python3 apply-globally.py --input /tmp/jalphed-vocab-list.json  --template ./manual-glossary.template.html --output /tmp/glossary.html
+####  python3 parse-vocab-list.py --tsv ~/Downloads/UCSC中上級教科書_漢字・単語リスト\ -\ 単語リス ト\(13\).tsv --output /tmp/parsed-vocab-list.json && python3 jalphabetical-bin.py --pattern vocab-list --input /tmp/parsed-vocab-list.json --output /tmp/jalphed-vocab-list.json && python3 apply-globally.py --input /tmp/jalphed-vocab-list.json  --template ./manual-glossary.template.html --output /tmp/glossary.html
 ####
 
 import sys
