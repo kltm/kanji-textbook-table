@@ -114,8 +114,11 @@ def main():
 
                     ## Basic error checking.
                     for required_entry in required_columns:
-                        if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
-                            die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
+                        try:
+                            if not data_object[required_entry] is str and not len(data_object[required_entry]) > 0:
+                                die_screaming('malformed line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
+                        except:
+                            die_screaming('exception line with "'+required_entry+'" at '+ str(i) +': '+ '\t'.join(line))
 
                     ## Try and get the read/write section changover
                     ## counts.
